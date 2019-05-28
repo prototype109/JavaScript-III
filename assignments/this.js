@@ -3,8 +3,8 @@
 *
 * 1. "this" keyword is bound to the forest which is whatever the root is of the environment being used.
 * 2. "this" keyword is bound to whatever is on the left of the dot operator. It is implicitely known what "this" refers to.
-* 3. 
-* 4. 
+* 3. "this" keyword is bound to the variable that it is assigned to with the "new" keyword creating an instance of the class.
+* 4. "this" keyword can be bound to anything you want it to as long as you use obj.call()/obj.apply()/obj.bind() on it.
 *
 * write out a code example of each explanation above
 */
@@ -13,24 +13,59 @@
 // code example for Window Binding
 console.log(this);
 
-// Principle 2
-
-function Person(greet, name){
-    this.greeting = this.greet;
-    this.myName = this.name;
-    this.sayHi = function(){
-        console.log(`${this.greeting} ${this.myName}`);
-    };
+function Person(newPerson){
+    this.greeting = newPerson.greeting;
+    this.myName = newPerson.name;
 }
 
-matilda.sayHi('Hi my name is', 'Matilda');
-Fred.sayHi('Hello there', 'General Kenobi');
+Person.prototype.sayHi = function(){
+    console.log(`${this.greeting} ${this.myName}`);
+};
+
+// Principle 2
 // code example for Implicit Binding
+Matilda.sayHi();
+Fred.sayHi();
 
 // Principle 3
 
 // code example for New Binding
+const Matilda = new Person({
+    greeting: 'Hi my name is',
+    name: 'Matilda'
+})
+
+const Fred = new Person({
+    greeting: 'Hello there',
+    name: 'General Kenobi'
+})
 
 // Principle 4
 
-// code example for Explicit Binding
+function Alien(attr){
+    Person.call(this, attr); // code example for Explicit Binding
+    this.species = attr.species;
+    this.galaxy = attr.galaxy;
+    this.planet = attr.planet;
+    this.transformState = false;
+}
+
+Alien.prototype = Object.create(Person.prototype);
+
+Alien.prototype.transform = function(){
+    if(this.transformState)
+        return false;
+    else
+        return true;
+};
+
+const tracoris = new Alien({
+    name: 'Tracoris',
+    greeting: 'Zip zop zippity',
+    species: 'Gorian',
+    galaxy: 'Sorian Circa 9',
+    planet: 'Vorex'
+});
+
+tracoris.transform();
+tracoris.sayHi();
