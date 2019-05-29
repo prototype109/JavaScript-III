@@ -35,13 +35,13 @@ GameObject.prototype.destroy = function(){
 
 function CharacterStats(charAttr){
   GameObject.call(this, charAttr);
-  this.healthPoints = charAttr;
+  this.healthPoints = charAttr.healthPoints;
 }
 
 CharacterStats.prototype = Object.create(GameObject.prototype);
 
-CharacterStats.prototype.takeDamage = function(){
-  return `${this.name} took damage`;
+CharacterStats.prototype.takeDamage = function(damage = 0){
+  return `${this.name} took ${damage} damage`;
 };
 
 /*
@@ -65,6 +65,14 @@ Humanoid.prototype = Object.create(CharacterStats.prototype);
 
 Humanoid.prototype.greet = function(){
   return `${this.name} offers a greeting in ${this.language}.`;
+};
+
+Humanoid.prototype.damageCalc = function(damage = 0){
+  this.healthPoints -= damage;
+};
+
+Humanoid.prototype.attackNotification = function(damage = 0){
+  console.log(`${this.name} has attacked and done ${damage} damage`);
 };
  
 /*
@@ -142,3 +150,70 @@ Humanoid.prototype.greet = function(){
   // * Create Villain and Hero constructor functions that inherit from the Humanoid constructor function.  
   // * Give the Hero and Villains different methods that could be used to remove health points from objects which could result in destruction if health gets to 0 or drops below 0;
   // * Create two new objects, one a villain and one a hero and fight it out with methods!
+
+  function Villain(villAttr){
+    Humanoid.call(this, villAttr);
+  }
+
+  function Hero(heroAttr){
+    Humanoid.call(this, heroAttr);
+  }
+
+  Hero.prototype = Object.create(Humanoid.prototype);
+  Villain.prototype = Object.create(Humanoid.prototype);
+
+  Hero.prototype.avengingWrath = function(villainObj){
+    let esfandAttack =  Math.floor(Math.random() * 11);
+    this.attackNotification(esfandAttack);
+    villainObj.takeDamage(esfandAttack);
+    this.damageCalc(esfandAttack);
+  };
+
+  Villain.prototype.feralSwipe = function(heroObj){
+    let sodaAttack =  Math.floor(Math.random() * 11);
+    this.attackNotification(sodaAttack);
+    heroObj.takeDamage(sodaAttack);
+    this.damageCalc(sodaAttack);
+  };
+
+  
+
+  const esfand = new Hero({
+    createdAt: new Date(),
+    dimensions: {
+      length: 2,
+      width: 1,
+      height: 1,
+    },
+    healthPoints: 1500,
+    name: 'Esfand',
+    team: 'Alliance',
+    weapons: [
+      'Ashbringer',
+    ],
+    language: 'Common Tongue',
+  });
+
+  const sodapoppin = new Villain({
+    createdAt: new Date(),
+    dimensions: {
+      length: 2,
+      width: 2,
+      height: 2,
+    },
+    healthPoints: 1500,
+    name: 'Soda',
+    team: 'Horde',
+    weapons: [
+      'Claw',
+      'Feral Form',
+    ],
+    language: 'Common Tongue',
+  });
+
+  while(sodapoppin.healthPoints > 0 && esfand.healthPoints > 0){
+    esfand.avengingWrath(sodapoppin);
+    sodapoppin.feralSwipe(esfand);
+  }
+
+  
