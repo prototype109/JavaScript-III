@@ -165,14 +165,14 @@ Humanoid.prototype.attackNotification = function(damage = 0){
   Hero.prototype.avengingWrath = function(villainObj){
     let esfandAttack =  Math.floor(Math.random() * 11);
     this.attackNotification(esfandAttack);
-    villainObj.takeDamage(esfandAttack);
+    console.log(villainObj.takeDamage(esfandAttack));
     this.damageCalc(esfandAttack);
   };
 
   Villain.prototype.feralSwipe = function(heroObj){
     let sodaAttack =  Math.floor(Math.random() * 11);
     this.attackNotification(sodaAttack);
-    heroObj.takeDamage(sodaAttack);
+    console.log(heroObj.takeDamage(sodaAttack));
     this.damageCalc(sodaAttack);
   };
 
@@ -185,7 +185,7 @@ Humanoid.prototype.attackNotification = function(damage = 0){
       width: 1,
       height: 1,
     },
-    healthPoints: 1500,
+    healthPoints: 50,
     name: 'Esfand',
     team: 'Alliance',
     weapons: [
@@ -201,7 +201,7 @@ Humanoid.prototype.attackNotification = function(damage = 0){
       width: 2,
       height: 2,
     },
-    healthPoints: 1500,
+    healthPoints: 50,
     name: 'Soda',
     team: 'Horde',
     weapons: [
@@ -211,9 +211,19 @@ Humanoid.prototype.attackNotification = function(damage = 0){
     language: 'Common Tongue',
   });
 
+  console.log(sodapoppin);
+  console.log(esfand);
+
   while(sodapoppin.healthPoints > 0 && esfand.healthPoints > 0){
     esfand.avengingWrath(sodapoppin);
     sodapoppin.feralSwipe(esfand);
+
+    if(sodapoppin.healthPoints <= 0)
+      console.log(sodapoppin.destroy());
+
+    if(esfand.healthPoints <= 0){
+      console.log(esfand.destroy());
+    }
   }
 
   
